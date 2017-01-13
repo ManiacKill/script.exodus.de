@@ -72,8 +72,7 @@ class source:
                 r = client.parseDOM(r, 'li')
                 r = [(client.parseDOM(i, 'a', ret='href'), client.parseDOM(i, 'a')) for i in r]
                 r = [(i[0][0], i[1][0]) for i in r if len(i[0]) > 0 and len(i[1]) > 0]
-                r = [(i[0], re.findall('^\d+$', i[1])) for i in r]
-                r = [(i[0], i[1][0][0] if len(i[1]) > 0 else '0') for i in r]
+                r = [(i[0], i[1] if re.compile("^(\d+)$").match(i[1]) else '0') for i in r]
                 r = [i[0] for i in r if int(i[1]) == int(episode)][0]
 
                 url = re.findall('(?://.+?|)(/.+)', r)[0]
