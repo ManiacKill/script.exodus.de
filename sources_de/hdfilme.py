@@ -60,11 +60,26 @@ class source:
             data = dict([(i, data[i][0]) if data[i] else (i, '') for i in data])
             title = data['tvshowtitle'] if 'tvshowtitle' in data else data['title']
 
-            url = self.__search(title, data['year'], season, episode)
+            url = self.__search(title, data['year'], season)
             if not url:
                 title = cleantitle.local(title, imdb, 'de-DE')
-                url = self.__search(title, data['year'], season, episode)
-            return url
+                url = self.__search(title, data['year'], season)
+
+            if url:
+                r = client.request(urlparse.urljoin(self.base_link, url))
+
+                r = client.parseDOM(r, 'ul', attrs={'class': 'list-inline list-film'})
+                r = client.parseDOM(r, 'li')
+                r = [(client.parseDOM(i, 'a', ret='href'), client.parseDOM(i, 'a')) for i in r]
+                r = [(i[0][0], i[1][0]) for i in r if len(i[0]) > 0 and len(i[1]) > 0]
+                r = [(i[0], re.findall('^\d+$', i[1])) for i in r]
+                r = [(i[0], i[1][0][0] if len(i[1]) > 0 else '0') for i in r]
+                r = [i[0] for i in r if int(i[1]) == int(episode)][0]
+
+                url = re.findall('(?://.+?|)(/.+)', r)[0]
+                url = client.replaceHTMLCodes(url)
+                url = url.encode('utf-8')
+                return url
         except:
             return
 
@@ -96,7 +111,7 @@ class source:
     def resolve(self, url):
         return directstream.googlepass(url)
 
-    def __search(self, title, year, season='0', episode=False):
+    def __search(self, title, year, season='0'):
         try:
             query = self.search_link % (urllib.quote_plus(cleantitle.query(title)))
             query = urlparse.urljoin(self.base_link, query)
@@ -122,7 +137,6 @@ class source:
             url = client.replaceHTMLCodes(url)
             url = url.encode('utf-8')
             url = url.replace('-info', '-stream')
-            if episode: url = urlparse.urlparse(url).path + '?episode=%s' % int(episode)
             return url
         except:
             return
