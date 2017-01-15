@@ -36,11 +36,8 @@ class source:
 
     def movie(self, imdb, title, year):
         try:
-            url = self.__search(title, year)
-            if not url:
-                title = cleantitle.local(title, imdb, 'de-DE')
-                url = self.__search(title, year)
-            return url
+            url = self.__search_movie(imdb, year)
+            return url if url else None
         except:
             return
 
@@ -61,7 +58,11 @@ class source:
             data = dict([(i, data[i][0]) if data[i] else (i, '') for i in data])
             title = data['tvshowtitle'] if 'tvshowtitle' in data else data['title']
 
-            return self.__search(cleantitle.local(title, imdb, 'de-DE'), data['year'], season, episode)
+            url = self.__search(title, data['year'], season, episode)
+            if not url:
+                title = cleantitle.local(title, imdb, 'de-DE')
+                url = self.__search(title, data['year'], season, episode)
+            return url
         except:
             return
 
@@ -95,6 +96,29 @@ class source:
 
     def resolve(self, url):
         return directstream.googlepass(url)
+
+    def __search_movie(self, imdb, year):
+        try:
+            query = urlparse.urljoin(self.base_link, self.search_link % imdb)
+
+            y = ['%s' % str(year), '%s' % str(int(year) + 1), '%s' % str(int(year) - 1), '0']
+
+            r = client.request(query)
+
+            r = client.parseDOM(r, 'div', attrs={'class': 'container'})
+            r = client.parseDOM(r, 'div', attrs={'class': 'ml-item-content'})
+            r = [(client.parseDOM(i, 'a', attrs={'class': 'ml-image'}, ret='href'),
+                  str(client.parseDOM(i, 'ul', attrs={'class': 'item-params'}))) for i in r]
+            r = [(i[0][0], re.findall('calendar.+?>.+?(\d{4})', i[1])) for i in r if len(i[0]) > 0 and len(i[1]) > 0]
+            r = [(i[0], i[1][0] if len(i[1]) > 0 else '0') for i in r]
+            r = [i[0] for i in r if i[1] in y][0]
+
+            url = re.findall('(?://.+?|)(/.+)', r)[0]
+            url = client.replaceHTMLCodes(url)
+            url = url.encode('utf-8')
+            return url
+        except:
+            return
 
     def __search(self, title, year, season=0, episode=False):
         try:
