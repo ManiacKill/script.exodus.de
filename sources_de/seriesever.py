@@ -58,46 +58,45 @@ class source:
             if url == None:
                 return sources
 
-            hostDict = [(i.rsplit('.', 1)[0], i) for i in hostDict]
-            hostDict = [i[0] for i in hostDict]
-
             query = urlparse.urljoin(self.base_link, url)
 
             r = client.request(query, mobile=True)
 
             id = re.compile('var\s*video_id\s*=\s*"(\d+)"').findall(r)[0]
 
-            p = client.parseDOM(r, 'a', attrs={'class': 'changePart'}, ret='data-part')
-            p = p[0] if p and len(p) == 1 else '720p'
+            p = client.parseDOM(r, 'a', attrs={'class': 'changePart', 'data-part': '\d+p'}, ret='data-part')
 
             query = urlparse.urljoin(self.base_link, self.part_link)
 
-            r = urllib.urlencode({'video_id': id, 'part_name': p, 'page': '0'})
-            r = client.request(query, mobile=True, headers={'X-Requested-With': 'XMLHttpRequest'}, post=r)
+            for i in p:
+                r = urllib.urlencode({'video_id': id, 'part_name': i, 'page': '0'})
+                r = client.request(query, mobile=True, headers={'X-Requested-With': 'XMLHttpRequest'}, post=r)
 
-            r = json.loads(r)
-            r = r.get('part', {})
+                r = json.loads(r)
+                r = r.get('part', {})
 
-            s = r.get('source', '')
-            url = r.get('code', '')
+                s = r.get('source', '')
+                url = r.get('code', '')
 
-            if s == 'url' and 'http' not in url:
-                url = self.__decode_hash(url)
-            elif s == 'other':
-                url = client.parseDOM(url, 'iframe', ret='src')[0]
-                if '/old/seframer.php' in url: url = self.__get_old_url(url)
+                if s == 'url' and 'http' not in url:
+                    url = self.__decode_hash(url)
+                elif s == 'other':
+                    url = client.parseDOM(url, 'iframe', ret='src')
+                    if len(url) < 1: continue
+                    url = url[0]
+                    if '/old/seframer.php' in url: url = self.__get_old_url(url)
 
-            quli = 'HD' if p in ['1080p', '720p', 'HD'] else 'SD'
+                host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(url.strip().lower()).netloc)[0]
+                if not host in hostDict: continue
 
-            host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(url.strip().lower()).netloc)[0]
-            if not host in hostDict: Exception()
+                quali = 'HD' if i in ['1080p', '720p', 'HD'] else 'SD'
 
-            sources.append(
-                {'source': host, 'quality': quli,
-                 'provider': 'SERIESEVER',
-                 'language': 'de',
-                 'url': url, 'direct': False,
-                 'debridonly': False})
+                sources.append(
+                    {'source': host, 'quality': quali,
+                     'provider': 'SERIESEVER',
+                     'language': 'de',
+                     'url': url, 'direct': False,
+                     'debridonly': False})
 
             return sources
         except:
