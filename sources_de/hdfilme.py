@@ -96,7 +96,7 @@ class source:
             result = [i['file'] for i in result if 'file' in i]
 
             for i in result:
-                try: sources.append({'source': 'gvideo', 'quality': directstream.googletag(i)[0]['quality'], 'provider': 'HDFilme', 'language': 'de', 'url': i, 'direct': True, 'debridonly': False})
+                try: sources.append({'source': 'gvideo', 'quality': directstream.googletag(i)[0]['quality'], 'language': 'de', 'url': i, 'direct': True, 'debridonly': False})
                 except: pass
 
             return sources

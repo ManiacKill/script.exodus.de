@@ -103,7 +103,6 @@ class source:
                     try:
                         sources.append(
                             {'source': i[1], 'quality': 'SD',
-                             'provider': 'KinoX',
                              'language': 'de',
                              'url': url, 'direct': False,
                              'debridonly': False})

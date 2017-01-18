@@ -102,7 +102,6 @@ class source:
 
             for hoster, id in r:
                 sources.append({'source': hoster, 'quality': quality,
-                                'provider': 'Filmpalast',
                                 'language': 'de',
                                 'url': id,
                                 'direct': False,

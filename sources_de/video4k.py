@@ -76,7 +76,6 @@ class source:
                     try:
                         sources.append(
                             {'source': hoster, 'quality': 'SD',
-                             'provider': 'Video4k',
                              'language': 'de',
                              'url': link['URL'],
                              'direct': False,

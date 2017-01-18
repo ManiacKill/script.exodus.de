@@ -85,7 +85,6 @@ class source:
 
             for link, hoster, quality in r:
                 sources.append({'source': hoster, 'quality': quality,
-                                'provider': 'Serienstream',
                                 'language': 'de',
                                 'url': link,
                                 'direct': False,

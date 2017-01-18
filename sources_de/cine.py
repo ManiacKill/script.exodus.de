@@ -64,7 +64,6 @@ class source:
                     try:
                         sources.append(
                             {'source': hoster, 'quality': 'HD' if quli.upper() == 'HD' else 'SD',
-                             'provider': 'CINE',
                              'language': 'de',
                              'url': urlparse.urljoin(self.base_link, self.out_link % link), 'direct': False,
                              'debridonly': False})

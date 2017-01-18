@@ -94,10 +94,10 @@ class source:
 
                 if 'google' in host:
                     for s in directstream.google(url):
-                        try: sources.append({'source': 'gvideo', 'quality': s['quality'], 'provider': 'SERIESEVER', 'language': 'de', 'url': s['url'], 'direct': True, 'debridonly': False})
+                        try: sources.append({'source': 'gvideo', 'quality': s['quality'], 'language': 'de', 'url': s['url'], 'direct': True, 'debridonly': False})
                         except: pass
                 else:
-                    sources.append({'source': host, 'quality': quali, 'provider': 'SERIESEVER', 'language': 'de', 'url': url, 'direct': False, 'debridonly': False})
+                    sources.append({'source': host, 'quality': quali, 'language': 'de', 'url': url, 'direct': False, 'debridonly': False})
 
             return sources
         except:

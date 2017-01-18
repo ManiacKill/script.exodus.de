@@ -92,7 +92,6 @@ class source:
 
                 for link, hoster in links:
                     sources.append({'source': hoster, 'quality': quality,
-                                    'provider': 'streamkiste',
                                     'language': 'de',
                                     'url': link,
                                     'info': info,

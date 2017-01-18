@@ -111,7 +111,6 @@ class source:
 
                 for link, hoster in links:
                     sources.append({'source': hoster, 'quality': quality,
-                                    'provider': '1Kino',
                                     'language': 'de',
                                     'url': link,
                                     'direct': False,

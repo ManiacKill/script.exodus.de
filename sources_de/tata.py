@@ -82,7 +82,6 @@ class source:
                     sources.append(
                         {'source': 'gvideo',
                          'quality': directstream.googletag(i)[0]['quality'],
-                         'provider': 'Tata',
                          'language': 'de',
                          'url': i,
                          'direct': True,

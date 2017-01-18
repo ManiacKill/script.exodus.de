@@ -93,7 +93,6 @@ class source:
                 if not host in hostDict: continue
 
                 sources.append({'source': host, 'quality': quli,
-                                'provider': 'StreamDream',
                                 'language': 'de',
                                 'url': url, 'direct': False,
                                 'debridonly': False})

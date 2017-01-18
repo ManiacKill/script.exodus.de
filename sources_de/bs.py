@@ -71,7 +71,6 @@ class source:
                 try:
                     sources.append(
                         {'source': i[0], 'quality': 'HD' if i[0].upper().endswith('HD') else 'SD',
-                         'provider': 'BS',
                          'language': 'de',
                          'url': ('watch/%s' % i[1]), 'direct': False,
                          'debridonly': False})

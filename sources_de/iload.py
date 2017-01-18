@@ -137,7 +137,7 @@ class source:
                 items = [(i[0], i[1][0]) for i in items if len(i[1]) > 0 and i[1][0].lower() in hostDict]
 
                 for link, hoster in items:
-                    sources.append({'source': hoster, 'quality': quality, 'provider': 'ILOAD', 'language': 'de', 'url': link, 'info': info, 'direct': False, 'debridonly': False})
+                    sources.append({'source': hoster, 'quality': quality, 'language': 'de', 'url': link, 'info': info, 'direct': False, 'debridonly': False})
 
             return sources
         except:

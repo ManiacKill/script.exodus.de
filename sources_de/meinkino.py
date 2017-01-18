@@ -84,7 +84,6 @@ class source:
                     for urlData in i:
                         sources.append(
                             {'source': 'gvideo', 'quality': directstream.googletag(urlData['link_mp4'])[0]['quality'],
-                             'provider': 'MeinKino',
                              'language': 'de',
                              'url': urlData['link_mp4'], 'direct': True,
                              'debridonly': False})
@@ -94,7 +93,6 @@ class source:
                         if not host in hostDict: continue
 
                         sources.append({'source': host, 'quality': 'SD',
-                                        'provider': 'MeinKino',
                                         'language': 'de',
                                         'url': value, 'direct': False,
                                         'debridonly': False})

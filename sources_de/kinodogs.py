@@ -81,7 +81,6 @@ class source:
 
             for link, hoster in r:
                 sources.append({'source': hoster, 'quality': 'SD',
-                                'provider': 'Kinodogs',
                                 'language': 'de',
                                 'url': link,
                                 'direct': False,

@@ -90,7 +90,6 @@ class source:
                 try:
                     sources.append(
                         {'source': jHoster, 'quality': 'SD',
-                         'provider': 'DDL',
                          'language': 'de',
                          'url': h_url, 'direct': False, 'debridonly': False})
                 except:

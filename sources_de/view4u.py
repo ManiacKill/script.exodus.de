@@ -87,7 +87,6 @@ class source:
                 if not host in hostDict: continue
 
                 sources.append({'source': host, 'quality': 'SD',
-                                'provider': 'View4u',
                                 'language': 'de',
                                 'url': url,
                                 'direct': False,
