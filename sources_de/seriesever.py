@@ -2,7 +2,7 @@
 
 '''
     Exodus Add-on
-    Copyright (C) 2016 Viper4k
+    Copyright (C) 2016 Viper2k4
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
