@@ -22,6 +22,7 @@ import re, urllib, urlparse, json, base64
 
 from resources.lib.modules import cleantitle
 from resources.lib.modules import client
+from resources.lib.modules import directstream
 
 class source:
     def __init__(self):
@@ -87,16 +88,16 @@ class source:
                     if '/old/seframer.php' in url: url = self.__get_old_url(url)
 
                 host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(url.strip().lower()).netloc)[0]
-                if not host in hostDict: continue
+                if not host in hostDict and not 'google' in host: continue
 
                 quali = 'HD' if i in ['1080p', '720p', 'HD'] else 'SD'
 
-                sources.append(
-                    {'source': host, 'quality': quali,
-                     'provider': 'SERIESEVER',
-                     'language': 'de',
-                     'url': url, 'direct': False,
-                     'debridonly': False})
+                if 'google' in host:
+                    for s in directstream.google(url):
+                        try: sources.append({'source': 'gvideo', 'quality': s['quality'], 'provider': 'SERIESEVER', 'language': 'de', 'url': s['url'], 'direct': True, 'debridonly': False})
+                        except: pass
+                else:
+                    sources.append({'source': host, 'quality': quali, 'provider': 'SERIESEVER', 'language': 'de', 'url': url, 'direct': False, 'debridonly': False})
 
             return sources
         except:
