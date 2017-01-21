@@ -83,12 +83,14 @@ class source:
                     quality = 'CAM'
 
                 info = []
-                if '3d' in fmt: info.append('3D')
+                if '3d' in fmt or any(i.endswith('3d') for i in fmt): info.append('3D')
                 if any(i in ['hevc', 'h265', 'x265'] for i in fmt): info.append('HEVC')
 
                 links = [(client.parseDOM(i, 'a', ret='href'), client.parseDOM(i, 'a')) for i in links]
                 links = [(i[0][0], i[1][0].lower().strip()) for i in links if len(i[0]) > 0 and len(i[1]) > 0]
                 links = [(i[0], i[1]) for i in links if i[1] in hostDict]
+
+                info = ' | '.join(info)
 
                 for link, hoster in links:
                     sources.append({'source': hoster, 'quality': quality,

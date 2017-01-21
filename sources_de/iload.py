@@ -126,7 +126,7 @@ class source:
                 elif any(i in ['camrip', 'tsrip', 'hdcam', 'hdts', 'dvdcam', 'dvdts', 'cam', 'telesync', 'ts'] for i in fmt): quality = 'CAM'
 
                 info = []
-                if '3d' in fmt: info.append('3D')
+                if '3d' in fmt or any(i.endswith('3d') for i in fmt): info.append('3D')
                 if any(i in ['hevc', 'h265', 'x265'] for i in fmt): info.append('HEVC')
 
                 items = [(client.parseDOM(i, 'a', ret='href'), client.parseDOM(i, 'a')) for i in items]
@@ -135,6 +135,8 @@ class source:
                 items = [(i[0], i[1][0]) for i in items if len(i[1]) > 0]
                 items = [(i[0], re.findall('.+/(.+\.\w+)\.\w+', i[1])) for i in items]
                 items = [(i[0], i[1][0]) for i in items if len(i[1]) > 0 and i[1][0].lower() in hostDict]
+
+                info = ' | '.join(info)
 
                 for link, hoster in items:
                     sources.append({'source': hoster, 'quality': quality, 'language': 'de', 'url': link, 'info': info, 'direct': False, 'debridonly': False})
