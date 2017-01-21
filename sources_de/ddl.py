@@ -90,7 +90,7 @@ class source:
                 try:
                     sources.append(
                         {'source': jHoster, 'quality': 'SD',
-                         'language': 'de',
+                         'language': 'de', 'info' : '' if pcnt == 1 else 'multi-part',
                          'url': h_url, 'direct': False, 'debridonly': False})
                 except:
                     pass
