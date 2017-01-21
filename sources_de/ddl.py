@@ -85,7 +85,7 @@ class source:
                 host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(h_url.strip().lower()).netloc)[0]
                 if not host in hostDict: continue
 
-                h_url = h_url if pcnt == 1 else 'stack://' + ','.join(jLinks)
+                h_url = h_url if pcnt == 1 else 'stack://' + ' , '.join(jLinks)
 
                 try:
                     sources.append(
