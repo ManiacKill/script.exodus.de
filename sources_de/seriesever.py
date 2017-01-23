@@ -23,6 +23,7 @@ import re, urllib, urlparse, json, base64
 from resources.lib.modules import cleantitle
 from resources.lib.modules import client
 from resources.lib.modules import directstream
+from resources.lib.modules import control
 
 class source:
     def __init__(self):
@@ -32,6 +33,11 @@ class source:
         self.base_link = 'http://seriesever.net'
         self.search_link = 'service/search?q=%s'
         self.part_link = 'service/get_video_part'
+
+        self.login_link = 'service/login'
+        self.user = control.setting('seriesever.user')
+        self.password = control.setting('seriesever.pass')
+
 
     def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
@@ -59,7 +65,9 @@ class source:
 
             query = urlparse.urljoin(self.base_link, url)
 
-            r = client.request(query, mobile=True)
+            cookie = self.__get_premium_cookie()
+
+            r = client.request(query)
 
             id = re.compile('var\s*video_id\s*=\s*"(\d+)"').findall(r)[0]
 
@@ -69,33 +77,38 @@ class source:
 
             for i in p:
                 r = urllib.urlencode({'video_id': id, 'part_name': i, 'page': '0'})
-                r = client.request(query, mobile=True, headers={'X-Requested-With': 'XMLHttpRequest'}, post=r)
+                r = client.request(query, cookie=cookie, headers={'X-Requested-With': 'XMLHttpRequest'}, post=r)
 
-                r = json.loads(r)
-                r = r.get('part', {})
+                try:
+                    r = json.loads(r)
+                    r = r.get('part', {})
 
-                s = r.get('source', '')
-                url = r.get('code', '')
+                    s = r.get('source', '')
+                    url = r.get('code', '')
 
-                if s == 'url' and 'http' not in url:
-                    url = self.__decode_hash(url)
-                elif s == 'other':
-                    url = client.parseDOM(url, 'iframe', ret='src')
-                    if len(url) < 1: continue
-                    url = url[0]
-                    if '/old/seframer.php' in url: url = self.__get_old_url(url)
+                    if s == 'url' and 'http' not in url:
+                        url = self.__decode_hash(url)
+                    elif s == 'other':
+                        url = client.parseDOM(url, 'iframe', ret='src')
+                        if len(url) < 1: continue
+                        url = url[0]
+                        if '/old/seframer.php' in url: url = self.__get_old_url(url)
 
-                host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(url.strip().lower()).netloc)[0]
-                if not host in hostDict and not 'google' in host: continue
+                    host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(url.strip().lower()).netloc)[0]
+                    if not host in hostDict and not 'google' in host: continue
 
-                quali = 'HD' if i in ['1080p', '720p', 'HD'] else 'SD'
+                    quali = 'SD'
+                    if i in ['720p', 'HD']: quali = 'HD'
+                    if i in ['2160p', '1080p']: quali = '1080p'
 
-                if 'google' in host:
-                    for s in directstream.google(url):
-                        try: sources.append({'source': 'gvideo', 'quality': s['quality'], 'language': 'de', 'url': s['url'], 'direct': True, 'debridonly': False})
-                        except: pass
-                else:
-                    sources.append({'source': host, 'quality': quali, 'language': 'de', 'url': url, 'direct': False, 'debridonly': False})
+                    if 'google' in host:
+                        for s in directstream.google(url):
+                            try: sources.append({'source': 'gvideo', 'quality': s['quality'], 'language': 'de', 'url': s['url'], 'direct': True, 'debridonly': False})
+                            except: pass
+                    else:
+                        sources.append({'source': host, 'quality': quali, 'language': 'de', 'url': url, 'direct': False, 'debridonly': False})
+                except:
+                    pass
 
             return sources
         except:
@@ -148,5 +161,17 @@ class source:
                 return url[0]
         except:
             return
+
+    def __get_premium_cookie(self):
+        try:
+            if (self.user == '' or self.password == ''): raise Exception()
+
+            login = urlparse.urljoin(self.base_link, self.login_link)
+            post = urllib.urlencode({'username': self.user, 'password': self.password})
+            cookie = client.request(login, post=post, headers={'X-Requested-With': 'XMLHttpRequest'}, output='cookie')
+            r = client.request(urlparse.urljoin(self.base_link, 'api'), cookie=cookie)
+            return cookie if r == '1' else ''
+        except:
+            return ''
 
 
