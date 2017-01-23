@@ -32,7 +32,7 @@ class source:
         self.domains = ['view4u.cc']
         self.base_link = 'http://view4u.cc'
 
-    def movie(self, imdb, title, year):
+    def movie(self, imdb, title, localtitle, year):
         try:
             url = self.__search(imdb)
             if url:
@@ -40,9 +40,9 @@ class source:
         except:
             return
 
-    def tvshow(self, imdb, tvdb, tvshowtitle, year):
+    def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
-            return self.movie(imdb, tvshowtitle, year)
+            return self.movie(imdb, tvshowtitle, localtvshowtitle, year)
         except:
             return
 

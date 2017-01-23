@@ -34,16 +34,16 @@ class source:
         self.search_link = '/filme?suche=%s&type=alle'
         self.ajax_link = '/ajax/stream/%s'
 
-    def movie(self, imdb, title, year):
+    def movie(self, imdb, title, localtitle, year):
         try:
             url = self.__search_movie(imdb, year)
             return url if url else None
         except:
             return
 
-    def tvshow(self, imdb, tvdb, tvshowtitle, year):
+    def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
-            url = {'imdb': imdb, 'tvdb': tvdb, 'tvshowtitle': tvshowtitle, 'year': year}
+            url = {'imdb': imdb, 'tvdb': tvdb, 'tvshowtitle': tvshowtitle, 'localtvshowtitle': localtvshowtitle, 'year': year}
             url = urllib.urlencode(url)
             return url
         except:
@@ -56,12 +56,10 @@ class source:
 
             data = urlparse.parse_qs(url)
             data = dict([(i, data[i][0]) if data[i] else (i, '') for i in data])
-            title = data['tvshowtitle'] if 'tvshowtitle' in data else data['title']
 
-            url = self.__search(title, data['year'], season, episode)
+            url = self.__search(data['tvshowtitle'], data['year'], season, episode)
             if not url:
-                title = cleantitle.local(title, imdb, 'de-DE')
-                url = self.__search(title, data['year'], season, episode)
+                url = self.__search(data['localtvshowtitle'], data['year'], season, episode)
             return url
         except:
             return
@@ -78,16 +76,8 @@ class source:
             result = json.loads(result)
             result = [i['link_mp4'] for i in result['url'] if isinstance(result["url"], list)]
             for i in result:
-                try:
-                    sources.append(
-                        {'source': 'gvideo',
-                         'quality': directstream.googletag(i)[0]['quality'],
-                         'language': 'de',
-                         'url': i,
-                         'direct': True,
-                         'debridonly': False})
-                except:
-                    pass
+                try: sources.append({'source': 'gvideo', 'quality': directstream.googletag(i)[0]['quality'], 'language': 'de', 'url': i, 'direct': True, 'debridonly': False})
+                except: pass
 
             return sources
         except:

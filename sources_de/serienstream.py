@@ -32,22 +32,18 @@ class source:
         self.base_link = 'http://serienstream.to'
         self.search_link = '/ajax/search'
 
-    def movie(self, imdb, title, year):
+    def movie(self, imdb, title, localtitle, year):
         try:
             url = self.__search(title)
-            if not url:
-                title = cleantitle.local(title, imdb, 'de-DE')
-                url = self.__search(title)
+            if not url: url = self.__search(localtitle)
             return url
         except:
             return
 
-    def tvshow(self, imdb, tvdb, tvshowtitle, year):
+    def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
             url = self.__search(tvshowtitle)
-            if not url:
-                title = cleantitle.local(tvshowtitle, imdb, 'de-DE')
-                url = self.__search(title)
+            if not url: url = self.__search(localtvshowtitle)
             return url
         except:
             return

@@ -31,13 +31,13 @@ class source:
         self.base_link = 'http://video4k.to'
         self.request_link = '/request'
 
-    def movie(self, imdb, title, year):
+    def movie(self, imdb, title, localtitle, year):
         try:
             return urllib.urlencode({'mID': re.sub('[^0-9]', '', imdb)})
         except:
             return
 
-    def tvshow(self, imdb, tvdb, tvshowtitle, year):
+    def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
             return urllib.urlencode({'mID': re.sub('[^0-9]', '', imdb)})
         except:

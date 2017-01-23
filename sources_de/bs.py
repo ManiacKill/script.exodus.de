@@ -32,13 +32,13 @@ class source:
         self.base_link = 'https://www.bs.to/'
         self.api_link = 'api/%s'
 
-    def tvshow(self, imdb, tvdb, tvshowtitle, year):
+    def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
             t = cleantitle.get(tvshowtitle)
             j_c = self.__get_json("series")
             j = [i['id'] for i in j_c if t == cleantitle.get(i["series"])]
             if len(j) == 0:
-                t = cleantitle.get(cleantitle.local(tvshowtitle, imdb, 'de-DE'))
+                t = cleantitle.get(localtvshowtitle)
                 j = [i['id'] for i in j_c if t == cleantitle.get(i["series"])]
 
             return 'series/%s/' % j[0]

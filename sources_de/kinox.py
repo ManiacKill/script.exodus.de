@@ -33,7 +33,7 @@ class source:
         self.get_links_epi = '/aGET/MirrorByEpisode/?Addr=%s&SeriesID=%s&Season=%s&Episode=%s'
         self.mirror_link = '/aGET/Mirror/%s&Hoster=%s&Mirror=%s'
 
-    def movie(self, imdb, title, year):
+    def movie(self, imdb, title, localtitle, year):
         try:
             url = self.__search(imdb)
             if url:
@@ -41,9 +41,9 @@ class source:
         except:
             return
 
-    def tvshow(self, imdb, tvdb, tvshowtitle, year):
+    def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
-            return self.movie(imdb, tvshowtitle, year)
+            return self.movie(imdb, tvshowtitle, localtvshowtitle, year)
         except:
             return
 

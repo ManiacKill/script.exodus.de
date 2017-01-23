@@ -33,14 +33,11 @@ class source:
         self.search_link = '/livesearch.php?keyword=%s&nonce=%s'
         self.drop_link = '/drop.php'
 
-    def movie(self, imdb, title, year):
+    def movie(self, imdb, title, localtitle, year):
         try:
             url = self.__search(title, year)
-            if not url:
-                title = cleantitle.local(title, imdb, 'de-DE')
-                url = self.__search(title, year)
-            if url:
-                return url
+            if not url: url = self.__search(localtitle, year)
+            return url
         except:
             return
 
@@ -70,17 +67,11 @@ class source:
                 fmt = re.split('\.|\(|\)|\[|\]|\s|\-', fmt)
                 fmt = [i.lower() for i in fmt]
 
-                if '1080p' in fmt:
-                    quality = '1080p'
-                elif '720p' in fmt:
-                    quality = 'HD'
-                else:
-                    quality = 'SD'
-                if any(i in ['dvdscr', 'r5', 'r6'] for i in fmt):
-                    quality = 'SCR'
-                elif any(i in ['camrip', 'tsrip', 'hdcam', 'hdts', 'dvdcam', 'dvdts', 'cam', 'telesync', 'ts'] for i in
-                         fmt):
-                    quality = 'CAM'
+                if '1080p' in fmt: quality = '1080p'
+                elif '720p' in fmt: quality = 'HD'
+                else: quality = 'SD'
+                if any(i in ['dvdscr', 'r5', 'r6'] for i in fmt):  quality = 'SCR'
+                elif any(i in ['camrip', 'tsrip', 'hdcam', 'hdts', 'dvdcam', 'dvdts', 'cam', 'telesync', 'ts'] for i in fmt): quality = 'CAM'
 
                 info = []
                 if '3d' in fmt or any(i.endswith('3d') for i in fmt): info.append('3D')
