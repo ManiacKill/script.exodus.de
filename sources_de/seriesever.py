@@ -63,21 +63,20 @@ class source:
             if url == None:
                 return sources
 
-            query = urlparse.urljoin(self.base_link, url)
+            url = urlparse.urljoin(self.base_link, url)
 
             cookie = self.__get_premium_cookie()
 
-            r = client.request(query)
+            r = client.request(url, mobile=True, cookie=cookie)
 
+            query = urlparse.urljoin(self.base_link, self.part_link)
             id = re.compile('var\s*video_id\s*=\s*"(\d+)"').findall(r)[0]
 
             p = client.parseDOM(r, 'a', attrs={'class': 'changePart', 'data-part': '\d+p'}, ret='data-part')
 
-            query = urlparse.urljoin(self.base_link, self.part_link)
-
             for i in p:
                 r = urllib.urlencode({'video_id': id, 'part_name': i, 'page': '0'})
-                r = client.request(query, cookie=cookie, headers={'X-Requested-With': 'XMLHttpRequest'}, post=r)
+                r = client.request(query, cookie=cookie, mobile=True, headers={'X-Requested-With': 'XMLHttpRequest'}, post=r , referer=url)
 
                 try:
                     r = json.loads(r)
@@ -99,14 +98,15 @@ class source:
 
                     quali = 'SD'
                     if i in ['720p', 'HD']: quali = 'HD'
-                    if i in ['2160p', '1080p']: quali = '1080p'
+                    if i in ['1080p']: quali = '1080p'
+                    if i in ['2160p']: continue  # QHD and UHD support will be given out later
 
-                    if 'google' in host:
-                        for s in directstream.google(url):
-                            try: sources.append({'source': 'gvideo', 'quality': s['quality'], 'language': 'de', 'url': s['url'], 'direct': True, 'debridonly': False})
-                            except: pass
-                    else:
-                        sources.append({'source': host, 'quality': quali, 'language': 'de', 'url': url, 'direct': False, 'debridonly': False})
+                    if 'google' in url: host = 'gvideo'; direct = True; urls = directstream.google(url)
+                    elif 'ok.ru' in url: host = 'vk'; direct = True; urls = directstream.odnoklassniki(url)
+                    elif 'vk.com' in url: host = 'vk'; direct = True; urls = directstream.vk(url)
+                    else: direct = False; urls = [{'quality': quali, 'url': url}]
+
+                    for i in urls: sources.append({'source': host, 'quality': i['quality'], 'language': 'de', 'url': i['url'], 'direct': direct, 'debridonly': False})
                 except:
                     pass
 
@@ -127,7 +127,7 @@ class source:
             r = {'X-Requested-With': 'XMLHttpRequest'}
             r = client.request(query, headers=r)
 
-            if r and r.startswith('{'): '[%s]' % r
+            if r and r.startswith('{'): r = '[%s]' % r
 
             r = json.loads(r)
             r = [(i['url'], i['name']) for i in r if 'name' in i and 'url' in i]
@@ -165,11 +165,10 @@ class source:
     def __get_premium_cookie(self):
         try:
             if (self.user == '' or self.password == ''): raise Exception()
-
             login = urlparse.urljoin(self.base_link, self.login_link)
             post = urllib.urlencode({'username': self.user, 'password': self.password})
-            cookie = client.request(login, post=post, headers={'X-Requested-With': 'XMLHttpRequest'}, output='cookie')
-            r = client.request(urlparse.urljoin(self.base_link, 'api'), cookie=cookie)
+            cookie = client.request(login, mobile=True, post=post, headers={'X-Requested-With': 'XMLHttpRequest'}, output='cookie')
+            r = client.request(urlparse.urljoin(self.base_link, 'api'), mobile=True, cookie=cookie)
             return cookie if r == '1' else ''
         except:
             return ''
