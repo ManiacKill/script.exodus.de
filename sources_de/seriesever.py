@@ -96,10 +96,9 @@ class source:
                     host = re.findall('([\w]+[.][\w]+)$', urlparse.urlparse(url.strip().lower()).netloc)[0]
                     if not host in hostDict and not 'google' in host: continue
 
-                    quali = 'SD'
                     if i in ['720p', 'HD']: quali = 'HD'
-                    if i in ['1080p']: quali = '1080p'
-                    if i in ['2160p']: continue  # QHD and UHD support will be given out later
+                    elif i in ['1080p', '1440p', '2160p']: quali = i
+                    else: quali = 'SD'
 
                     if 'google' in url: host = 'gvideo'; direct = True; urls = directstream.google(url)
                     elif 'ok.ru' in url: host = 'vk'; direct = True; urls = directstream.odnoklassniki(url)
