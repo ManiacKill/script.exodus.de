@@ -97,7 +97,8 @@ class source:
                     if not host in hostDict and not 'google' in host: continue
 
                     if i in ['720p', 'HD']: quali = 'HD'
-                    elif i in ['1080p', '1440p', '2160p']: quali = i
+                    elif i in ['1080p', '1440p']: quali = i
+                    elif i in ['2160p']: quali = '4K'
                     else: quali = 'SD'
 
                     if 'google' in url: host = 'gvideo'; direct = True; urls = directstream.google(url)
