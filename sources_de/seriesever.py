@@ -115,6 +115,7 @@ class source:
             return sources
 
     def resolve(self, url):
+        if directstream.googletag(url): url = directstream.googlepass(url)
         return url
 
     def __search(self, title):
