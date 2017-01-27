@@ -75,8 +75,6 @@ class source:
             if url == None:
                 return sources
 
-            hostDict.append('openload hd')
-
             query = urlparse.urljoin(self.base_link, url)
 
             r = client.request(query)
@@ -96,14 +94,12 @@ class source:
             r = [(client.parseDOM(i, 'p', attrs={'class': 'hostName'}),
                   client.parseDOM(i, 'a', attrs={'class': '[^\'"]*stream-src[^\'"]*'}, ret='data-id')) for i in r]
             r = [(i[0][0].lower(), i[1][0]) for i in r if len(i[0]) > 0 and len(i[1]) > 0]
-            r = [(i[0], i[1]) for i in r if i[0] in hostDict]
 
             for hoster, id in r:
-                sources.append({'source': hoster, 'quality': quality,
-                                'language': 'de',
-                                'url': id,
-                                'direct': False,
-                                'debridonly': False})
+                if 'openload' in hoster: hoster = 'openload.co'
+                if hoster not in hostDict: continue
+
+                sources.append({'source': hoster, 'quality': quality, 'language': 'de', 'url': id, 'direct': False, 'debridonly': False})
 
             return sources
         except:
