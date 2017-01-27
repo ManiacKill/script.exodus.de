@@ -65,17 +65,14 @@ class source:
 
             j = self.__get_json(url)
             j = [i for i in j['links'] if 'links' in j]
-            j = [(i['hoster'], i['id']) for i in j if i['hoster'].lower() in hostDict]
+            j = [(i['hoster'].lower(), i['id']) for i in j if i['hoster'].lower() in hostDict]
 
-            for i in j:
-                try:
-                    sources.append(
-                        {'source': i[0], 'quality': 'HD' if i[0].upper().endswith('HD') else 'SD',
-                         'language': 'de',
-                         'url': ('watch/%s' % i[1]), 'direct': False,
-                         'debridonly': False})
-                except:
-                    pass
+            for hoster, url in j:
+                quality = 'HD' if hoster.endswith('hd') else 'SD'
+
+                if 'openload' in hoster: hoster = 'openload.co'
+
+                sources.append({'source': hoster, 'quality': quality, 'language': 'de', 'url': ('watch/%s' % url), 'direct': False, 'debridonly': False})
 
             return sources
         except:
