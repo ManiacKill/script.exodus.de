@@ -71,10 +71,8 @@ class source:
                 return sources
 
             query = urlparse.urljoin(self.base_link, self.get_link % (re.findall('-id(.*?)$', url)[0]))
-            header = {'X-Requested-With': 'XMLHttpRequest',
-                      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'}
 
-            r = client.request(query, post='', headers=header)
+            r = client.request(query, post='', XHR=True)
             r = json.loads(r)
             r = [i[1] for i in r.items()]
 

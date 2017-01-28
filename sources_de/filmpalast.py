@@ -108,8 +108,7 @@ class source:
     def resolve(self, url):
         try:
             query = urlparse.urljoin(self.base_link, self.stream_link % url)
-            header = {'X-Requested-With': 'XMLHttpRequest'}
-            r = client.request(query, headers=header, post=urllib.urlencode({'streamID': url}))
+            r = client.request(query, XHR=True, post=urllib.urlencode({'streamID': url}))
             r = json.loads(r)
             return r['url'] if 'error' in r and r['error'] == '0' and 'url' in r else None
         except:
