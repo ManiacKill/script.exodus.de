@@ -36,7 +36,7 @@ class source:
     def movie(self, imdb, title, localtitle, year):
         try:
             url = self.__search(title)
-            if not url: url = self.__search(localtitle)
+            if not url and title != localtitle: url = self.__search(localtitle)
             return url
         except:
             return
@@ -60,7 +60,7 @@ class source:
             title += ' S%02dE%02d' % (int(season), int(episode))
 
             url = self.__search(title)
-            if not url:
+            if not url and data['tvshowtitle'] != data['localtvshowtitle']:
                 title = data['localtvshowtitle']
                 title += ' S%02dE%02d' % (int(season), int(episode))
                 url = self.__search(title)

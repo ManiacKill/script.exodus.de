@@ -42,7 +42,7 @@ class source:
     def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
             url = self.__search(tvshowtitle)
-            if not url: url = self.__search(localtvshowtitle)
+            if not url and tvshowtitle != localtvshowtitle: url = self.__search(localtvshowtitle)
             return url
         except:
             return
