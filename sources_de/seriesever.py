@@ -144,6 +144,7 @@ class source:
     def __decode_hash(self, hash):
         hash = hash.replace("!BeF", "R")
         hash = hash.replace("@jkp", "Ax")
+        hash += '=' * (-len(hash) % 4)
         try: return base64.b64decode(hash)
         except: return
 
