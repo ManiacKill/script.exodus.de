@@ -116,6 +116,7 @@ class source:
 
     def resolve(self, url):
         if directstream.googletag(url): url = directstream.googlepass(url)
+        if url.startswith('/'): url = 'http:%s' % url
         return url
 
     def __search(self, title):
