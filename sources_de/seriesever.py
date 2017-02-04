@@ -41,8 +41,8 @@ class source:
 
     def tvshow(self, imdb, tvdb, tvshowtitle, localtvshowtitle, year):
         try:
-            url = self.__search(tvshowtitle)
-            if not url and tvshowtitle != localtvshowtitle: url = self.__search(localtvshowtitle)
+            url = self.__search(tvshowtitle, year)
+            if not url and tvshowtitle != localtvshowtitle: url = self.__search(localtvshowtitle, year)
             return url
         except:
             return
@@ -119,12 +119,13 @@ class source:
         if url.startswith('/'): url = 'http:%s' % url
         return url
 
-    def __search(self, title):
+    def __search(self, title, year):
         try:
             query = self.search_link % (urllib.quote_plus(title))
             query = urlparse.urljoin(self.base_link, query)
 
             t = cleantitle.get(title)
+            y = ['%s' % str(year), '%s' % str(int(year) + 1), '%s' % str(int(year) - 1), '0']
 
             r = client.request(query, XHR=True)
 
@@ -132,7 +133,9 @@ class source:
 
             r = json.loads(r)
             r = [(i['url'], i['name']) for i in r if 'name' in i and 'url' in i]
-            r = [i[0] for i in r if cleantitle.get(i[1]) == t][0]
+            r = [(i[0], i[1], re.findall('(.+?) \(*(\d{4})?', i[1])) for i in r]
+            r = [(i[0], i[2][0][0] if len(i[2]) > 0 else i[1], i[2][0][1] if len(i[2]) > 0 else '0') for i in r]
+            r = [i[0] for i in r if cleantitle.get(i[1]) == t and i[2] in y][0]
 
             url = re.findall('(?://.+?|)(/.+).html?', r)[0]
             url = client.replaceHTMLCodes(url)
