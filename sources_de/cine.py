@@ -61,7 +61,7 @@ class source:
                 for link in links:
                     try:
                         sources.append(
-                            {'source': hoster, 'quality': 'HD' if quli.upper() == 'HD' else 'SD',
+                            {'source': hoster, 'quality': 'SD',
                              'language': 'de',
                              'url': urlparse.urljoin(self.base_link, self.out_link % link), 'direct': False,
                              'debridonly': False})
@@ -69,7 +69,7 @@ class source:
                         pass
 
             return sources
-        except Exception as e:
+        except:
             return sources
 
     def resolve(self, url):
