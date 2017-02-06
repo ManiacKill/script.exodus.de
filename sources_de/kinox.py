@@ -20,6 +20,7 @@
 
 import re, urllib, urlparse, json
 
+from resources.lib.modules import cache
 from resources.lib.modules import client
 
 
@@ -27,11 +28,13 @@ class source:
     def __init__(self):
         self.priority = 1
         self.language = ['de']
-        self.domains = ['kinox.to']
+        self.domains = ['kinox.to', 'kinox.ag', 'kinox.tv', 'kinox.me', 'kinox.am', 'kinox.nu', 'kinox.pe', 'kinox.sg']
         self.base_link = 'http://kinox.to'
         self.search_link = '/Search.html?q=%s'
         self.get_links_epi = '/aGET/MirrorByEpisode/?Addr=%s&SeriesID=%s&Season=%s&Episode=%s'
         self.mirror_link = '/aGET/Mirror/%s&Hoster=%s&Mirror=%s'
+
+        self.base_link = cache.get(self.__get_base_url, 120, self.base_link)
 
     def movie(self, imdb, title, localtitle, year):
         try:
@@ -151,3 +154,20 @@ class source:
             return url
         except:
             return
+
+    def __get_base_url(self, fallback):
+        try:
+            for domain in self.domains:
+                try:
+                    url = 'http://%s' % domain
+                    r = client.request(url)
+                    r = client.parseDOM(r, 'meta', attrs={'name': 'keywords'})[0]
+                    if 'kino.to' in r.lower():
+                        return url
+                except:
+                    pass
+
+            return fallback
+        except:
+            return fallback
+
