@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 '''
 
-import re, urllib, urlparse, json
+import re, urllib, urlparse
 
 from resources.lib.modules import cleantitle
 from resources.lib.modules import client
@@ -84,13 +84,10 @@ class source:
             if url == None:
                 return sources
 
-            url = urlparse.urljoin(self.base_link, url)
-            result = client.request(url)
-            result = re.compile('(\[{".*?}\])').findall(result)[0]
-            result = json.loads(result)
-            result = [i['file'] for i in result if 'file' in i]
+            r = client.request(urlparse.urljoin(self.base_link, url))
+            r = re.findall('file"?\s*:\s*"(.+?)"', r)
 
-            for i in result:
+            for i in r:
                 try: sources.append({'source': 'gvideo', 'quality': directstream.googletag(i)[0]['quality'], 'language': 'de', 'url': i, 'direct': True, 'debridonly': False})
                 except: pass
 
