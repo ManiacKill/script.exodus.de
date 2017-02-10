@@ -118,7 +118,7 @@ class source:
             r = [(i[0], i[1], i[2], re.findall('(.+?)\s+(?:staf+el|s)\s+(\d+)', i[1])) for i in r]
             r = [(i[0], i[3][0][0] if len(i[3]) > 0 else i[1], i[2], i[3][0][1] if len(i[3]) > 0 else '0') for i in r]
             r = [(i[0], i[1].replace(' hd', ''), i[2], i[3]) for i in r]
-            r = [i[0] for i in r if t == cleantitle.get(i[1]) and i[2] in y and int(i[3]) == int(season)][0]
+            r = [i[0] for i in r if t == cleantitle.get(i[1].encode('utf-8')) and i[2] in y and int(i[3]) == int(season)][0]
 
             url = re.findall('(?://.+?|)(/.+)', r)[0]
             url = client.replaceHTMLCodes(url)

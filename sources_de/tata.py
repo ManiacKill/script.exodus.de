@@ -140,7 +140,7 @@ class source:
                     s = client.parseDOM(s, 'span', attrs={'class': 'el-num'})
                     if s: _season = s[0].strip()
 
-                if t == cleantitle.get(_title) and _year in y and int(_season) == int(season):
+                if t == cleantitle.get(_title.encode('utf-8')) and _year in y and int(_season) == int(season):
                     f.append(_url)
             r = f
 

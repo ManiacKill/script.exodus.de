@@ -105,7 +105,7 @@ class source:
             r = [(client.parseDOM(i, 'div', attrs={'class': 'title'}), client.parseDOM(i, 'span', attrs={'class': 'year'})) for i in r]
             r = [(client.parseDOM(i[0][0], 'a', ret='href'), client.parseDOM(i[0][0], 'a'), i[1][0]) for i in r if len(i[0]) > 0 and len(i[1]) > 0]
             r = [(i[0][0], i[1][0], i[2]) for i in r if len(i[0]) > 0 and len(i[1]) > 0]
-            r = [i[0] for i in r if t == cleantitle.get(i[1]) and i[2] in y][0]
+            r = [i[0] for i in r if t == cleantitle.get(i[1].encode('utf-8')) and i[2] in y][0]
 
             url = re.findall('(?://.+?|)(/.+)', r)[0]
             url = client.replaceHTMLCodes(url)
