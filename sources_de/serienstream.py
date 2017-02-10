@@ -107,7 +107,7 @@ class source:
             r = [(i['link'], re.sub('<.+?>|</.+?>', '', i['title'])) for i in r if 'title' in i and 'link' in i]
             r = [(i[0], i[1], re.findall('(.+?)\s*Movie \d+:.+?$', i[1], re.DOTALL)) for i in r]
             r = [(i[0], i[2][0] if len(i[2]) > 0 else i[1]) for i in r]
-            r = [i[0] for i in r if t == cleantitle.get(i[1].encode('utf-8'))][0]
+            r = [i[0] for i in r if t == cleantitle.get(i[1])][0]
 
             url = re.findall('(?://.+?|)(/.+)', r)[0]
             url = client.replaceHTMLCodes(url)

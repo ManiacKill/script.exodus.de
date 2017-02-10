@@ -135,7 +135,7 @@ class source:
             r = [(i['url'], i['name']) for i in r if 'name' in i and 'url' in i]
             r = [(i[0], i[1], re.findall('(.+?) \(*(\d{4})?', i[1])) for i in r]
             r = [(i[0], i[2][0][0] if len(i[2]) > 0 else i[1], i[2][0][1] if len(i[2]) > 0 else '0') for i in r]
-            r = [i[0] for i in r if cleantitle.get(i[1].encode('utf-8')) == t and i[2] in y][0]
+            r = [i[0] for i in r if cleantitle.get(i[1]) == t and i[2] in y][0]
 
             url = re.findall('(?://.+?|)(/.+).html?', r)[0]
             url = client.replaceHTMLCodes(url)

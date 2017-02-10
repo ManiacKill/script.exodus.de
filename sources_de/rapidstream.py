@@ -127,7 +127,7 @@ class source:
             r = json.loads(r)
             r = r.get('results', [])
             r = [(i['guid'], i['post_title']) for i in r if 'guid' in i and 'post_title' in i]
-            r = [i[0] for i in r if t == cleantitle.get(i[1].encode('utf-8'))][0]
+            r = [i[0] for i in r if t == cleantitle.get(i[1])][0]
 
             url = re.findall('(?://.+?|)(/.+)', r)[0]
             url = client.replaceHTMLCodes(url)

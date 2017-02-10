@@ -37,10 +37,10 @@ class source:
         try:
             t = cleantitle.get(tvshowtitle)
             j_c = cache.get(self.__get_json, 12, "series")
-            j = [i['id'] for i in j_c if t == cleantitle.get(i["series"].encode('utf-8'))]
+            j = [i['id'] for i in j_c if t == cleantitle.get(i["series"])]
             if len(j) == 0:
                 t = cleantitle.get(localtvshowtitle)
-                j = [i['id'] for i in j_c if t == cleantitle.get(i["series"].encode('utf-8'))]
+                j = [i['id'] for i in j_c if t == cleantitle.get(i["series"])]
 
             return 'series/%s/' % j[0]
         except:
