@@ -61,8 +61,8 @@ class source:
             rels = [i[0] for i in rels if len(i[1]) > 0 and i[1][0].lower() == 'de']
 
             r = [client.parseDOM(r, 'div', attrs={'id': i}) for i in rels]
-            r = [re.findall('link"?\s*:\s*"(.+?)"', i[0]) for i in r]
-            r = [i[0] for i in r if len(i[0]) > 0]
+            r = [(re.findall('link"?\s*:\s*"(.+?)"', i[0]), client.parseDOM(i, 'iframe', attrs={'class': '[^\'"]*metaframe[^\'"]*'}, ret='src')) for i in r]
+            r = [i[0][0] if len(i[0]) > 0 else i[1][0] for i in r if len(i[0]) > 0 or len(i[1]) > 0]
 
             for i in r:
                 try:
